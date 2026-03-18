@@ -66,6 +66,7 @@ app.use(express.json());
 // Routes
 app.use('/api', require('./routes/contactRoute'));
 app.use('/api', require('./routes/authRoute'));
+app.use('/api', require('./routes/adminRoute'));
 
 const PORT = process.env.PORT || 4000;
 
