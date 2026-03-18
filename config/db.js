@@ -1,9 +1,41 @@
 const mongoose = require('mongoose');
+const Admin = require('../models/Admin');
+const bcrypt = require('bcryptjs');
+
+// Seed default admin if none exists
+const seedAdmin = async () => {
+  try {
+    const adminCount = await Admin.countDocuments();
+
+    if (adminCount === 0) {
+      console.log('No admin found. Creating default admin...');
+
+      const defaultAdmin = new Admin({
+        email: 'admin@example.com',
+        password: 'admin123', // Will be hashed by pre-save hook
+        name: 'Admin'
+      });
+
+      await defaultAdmin.save();
+      console.log('Default admin created successfully');
+      console.log('Email: admin@example.com');
+      console.log('Password: admin123');
+      console.log('IMPORTANT: Change these credentials in production!');
+    } else {
+      console.log(`Admin count: ${adminCount}`);
+    }
+  } catch (error) {
+    console.error('Error seeding admin:', error.message);
+  }
+};
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/edustack');
     console.log('MongoDB Connected');
+
+    // Seed admin after successful connection
+    await seedAdmin();
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
     process.exit(1);

@@ -16,8 +16,12 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Debug: Log incoming request (remove in production later)
+    console.log('Login attempt:', { email: email?.toLowerCase() });
+
     // Validate required fields
     if (!email || !password) {
+      console.log('Login failed: Missing email or password');
       return res.status(400).json({
         success: false,
         message: 'Email and password are required'
@@ -27,7 +31,11 @@ const login = async (req, res) => {
     // Find admin by email
     const admin = await Admin.findOne({ email: email.toLowerCase() });
 
+    // Debug: Check if admin was found
+    console.log('Admin found:', !!admin);
+
     if (!admin) {
+      console.log('Login failed: Admin not found for email:', email.toLowerCase());
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
@@ -37,7 +45,11 @@ const login = async (req, res) => {
     // Compare password
     const isMatch = await admin.comparePassword(password);
 
+    // Debug: Check password match
+    console.log('Password match:', isMatch);
+
     if (!isMatch) {
+      console.log('Login failed: Password mismatch for email:', email.toLowerCase());
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
@@ -46,6 +58,8 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(admin._id);
+
+    console.log('Login successful for:', email.toLowerCase());
 
     res.status(200).json({
       success: true,
@@ -60,6 +74,7 @@ const login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error.message);
     res.status(500).json({
       success: false,
       message: 'Server error',
