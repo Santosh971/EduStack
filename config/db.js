@@ -11,15 +11,15 @@ const seedAdmin = async () => {
       console.log('No admin found. Creating default admin...');
 
       const defaultAdmin = new Admin({
-        email: 'admin@example.com',
-        password: 'admin123', // Will be hashed by pre-save hook
+        email: 'admin@edustack.ca',
+        password: 'edustack123', // Will be hashed by pre-save hook
         name: 'Admin'
       });
 
       await defaultAdmin.save();
       console.log('Default admin created successfully');
-      console.log('Email: admin@example.com');
-      console.log('Password: admin123');
+      console.log('Email: admin@edustack.ca');
+      console.log('Password: edustack123');
       console.log('IMPORTANT: Change these credentials in production!');
     } else {
       console.log(`Admin count: ${adminCount}`);
